@@ -1,18 +1,31 @@
+# First stage: Build the application
 FROM ubuntu:latest AS build
 
-RUN apt-get update
-RUN apt-get install openjdk-17-jdk -y
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get clean;
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the project files into the container
 COPY . .
-RUN ls -la
+
+# Make the Gradle wrapper executable
 RUN chmod +x gradlew
-RUN ls -la
-RUN pwd
+
+# Build the application using Gradle
 RUN ./gradlew bootJar --no-daemon
 
+# Second stage: Run the application
 FROM openjdk:17-jdk-slim
 
+# Expose the application port
 EXPOSE 8080
 
-COPY --from=build /build/libs/demo-1.jar app.jar
+# Copy the built .jar file from the previous stage
+COPY --from=build /app/build/libs/demo-1.jar app.jar
 
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
