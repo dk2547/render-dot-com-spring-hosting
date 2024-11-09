@@ -9,14 +9,14 @@ RUN apt-get update && \
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the project files into the container
-COPY . .
+# Copy the project files into /app
+COPY . /app
 
 # Make the Gradle wrapper executable
-RUN chmod +x gradlew
+RUN chmod +x /app/gradlew
 
 # Build the application using Gradle
-RUN ./gradlew bootJar --no-daemon
+RUN /app/gradlew bootJar --no-daemon
 
 # Second stage: Run the application
 FROM openjdk:17-jdk-slim
