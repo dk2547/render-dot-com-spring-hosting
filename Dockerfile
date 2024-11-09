@@ -6,6 +6,7 @@ COPY . .
 RUN ls -la
 RUN chmod +x gradlew
 RUN ls -la
+RUN pwd
 RUN gradlew bootJar --no-daemon
 
 FROM openjdk:17-jdk-slim
